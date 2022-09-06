@@ -19,28 +19,7 @@ pipeline {
         sh 'docker run gesellix/trufflehog https://github.com/kiranjittuga/CVWA.git > trufflehog'
         sh 'cat trufflehog'
       }
-    } 
-    
-    stage ('OWASP Dependency-Check Vulnerabilities') {
-            steps {
-                dependencyCheck additionalArguments: ''' 
-                    -o "./" 
-                    -s "./"
-                    -f "ALL" 
-                    --prettyPrint''', odcInstallation: 'OWASP-DC'
-
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
     }
-    
-    stage ('SAST') {
-      steps {
-        withSonarQubeEnv('Sonar') {
-          sh 'mvn sonar:sonar'
-          sh 'cat target/sonar/report-task.txt'
-        }
-      }
-    } 
     
    
     stage ('Build') {
